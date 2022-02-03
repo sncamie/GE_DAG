@@ -1,6 +1,5 @@
 from airflow import AirflowException
 import pandas as pd
-from airflow.operators.python_operator import PythonOperator
 import great_expectations as ge
 import boto
 import great_expectations as ge
@@ -21,11 +20,11 @@ df=pd.read_parquet('latestfile.parquet')
 def validate_data(expectation_suite, **kwargs):
 
     # Retrieve data context
-    context = ge.data_context.DataContext("path to great_expectations.yml")
+    context = ge.data_context.DataContext("/home/dp-intern/Documents/GE_Dag/great_expectations/great_expectations.yml")
 
     # Create  batch_kwargs
     batch_request_1 = RuntimeBatchRequest(
-        datasource_name="my_datasource",
+        datasource_name="RSM9",
         data_connector_name="default_runtime_data_connector_name",
         data_asset_name="batch1",   
         runtime_parameters={"batch_data": df},  

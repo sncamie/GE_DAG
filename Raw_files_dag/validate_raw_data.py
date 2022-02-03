@@ -1,10 +1,13 @@
 from datetime import date, datetime, timedelta
 from airflow import AirflowException
-from airflow.operators.python_operator import PythonOperator
+from airflow.operators.python import PythonOperator
 import great_expectations as ge
-from airflow.operators.dummy_operator import DummyOperator
+from airflow.operators.dummy import DummyOperator
 from validation import *
 from airflow import DAG
+import shutup
+
+shutup.please()
 
 default_args = {
     'owner': 'airflow',
@@ -45,7 +48,9 @@ with DAG(
         task_id='task_validate_data',
         python_callable=validate_data,
         provide_context=True,
-        dag=dag)
+        op_kwargs={"checkpoint_name": "RSM9_checkpoint"},
+        dag=dag
+        )
 
     end_of_data_pipeline = DummyOperator(dag=dag, task_id="end_of_data_pipeline")
     
