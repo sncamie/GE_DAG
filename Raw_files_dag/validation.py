@@ -29,7 +29,7 @@ def validate_data(expectation_suite, **kwargs):
         data_connector_name="default_runtime_data_connector_name",
         data_asset_name="batch1",   
         runtime_parameters={"batch_data": df},  
-        batch_identifiers={"default_identifier_name": "batch_2"},
+        batch_identifiers={"default_identifier_name": "latest batch"},
     )
 
     # Create batch (batch_kwargs + expectation suite)

@@ -1,9 +1,295 @@
 {
   "data_asset_type": null,
   "expectation_suite_name": "RSM9_suite",
-  "expectations": [],
+  "expectations": [
+    {
+      "expectation_type": "expect_table_row_count_to_be_between",
+      "kwargs": {
+        "max_value": 2000,
+        "min_value": 100
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_table_column_count_to_be_between",
+      "kwargs": {
+        "max_value": 40,
+        "min_value": 30
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_in_set",
+      "kwargs": {
+        "column": "Decoiler1Active",
+        "value_set": [
+          false
+        ]
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "Decoiler1Active"
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_in_type_list",
+      "kwargs": {
+        "column": "Decoiler1Active",
+        "type_list": [
+          "BOOLEAN",
+          "boolean",
+          "BOOL",
+          "TINYINT",
+          "BIT",
+          "bool",
+          "BooleanType"
+        ]
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_in_set",
+      "kwargs": {
+        "column": "Decoiler2Active",
+        "value_set": [
+          false
+        ]
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "Decoiler2Active"
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_in_type_list",
+      "kwargs": {
+        "column": "Decoiler2Active",
+        "type_list": [
+          "BOOLEAN",
+          "boolean",
+          "BOOL",
+          "TINYINT",
+          "BIT",
+          "bool",
+          "BooleanType"
+        ]
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_in_set",
+      "kwargs": {
+        "column": "B28CoilArmInTopPos",
+        "value_set": [
+          false
+        ]
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "B28CoilArmInTopPos"
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_in_type_list",
+      "kwargs": {
+        "column": "B28CoilArmInTopPos",
+        "type_list": [
+          "BOOLEAN",
+          "boolean",
+          "BOOL",
+          "TINYINT",
+          "BIT",
+          "bool",
+          "BooleanType"
+        ]
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_in_set",
+      "kwargs": {
+        "column": "grouping_key",
+        "value_set": [
+          "RSM7"
+        ]
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "grouping_key"
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "CoilDiameter1"
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "LoopControl"
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "CoilDiameter2"
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "Tag120U3"
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_min_to_be_between",
+      "kwargs": {
+        "column": "Tag120U3",
+        "max_value": -1.1431420375019752e+36,
+        "min_value": -1.1431420375019752e+36
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_max_to_be_between",
+      "kwargs": {
+        "column": "Tag120U3",
+        "max_value": 1.318592026953821e+37,
+        "min_value": 1.318592026953821e+37
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_mean_to_be_between",
+      "kwargs": {
+        "column": "Tag120U3",
+        "max_value": 1.3971577781317369e+34,
+        "min_value": 1.3971577781317369e+34
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_median_to_be_between",
+      "kwargs": {
+        "column": "Tag120U3",
+        "max_value": 2.7733320669515147e-33,
+        "min_value": 2.7733320669515147e-33
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "Tag120U4"
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_min_to_be_between",
+      "kwargs": {
+        "column": "Tag120U4",
+        "max_value": -3.1986759431221336e+38,
+        "min_value": -3.1986759431221336e+38
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_mean_to_be_between",
+      "kwargs": {
+        "column": "Tag120U4",
+        "max_value": -8.681519371946408e+36,
+        "min_value": -8.681519371946408e+36
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_median_to_be_between",
+      "kwargs": {
+        "column": "Tag120U4",
+        "max_value": -5.971155035603985e+32,
+        "min_value": -5.971155035603985e+32
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "Tag120U6"
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_min_to_be_between",
+      "kwargs": {
+        "column": "Tag120U6",
+        "max_value": -4.253530093571971e+37,
+        "min_value": -4.253530093571971e+37
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_max_to_be_between",
+      "kwargs": {
+        "column": "Tag120U6",
+        "max_value": 4.1538369916518464e+34,
+        "min_value": 4.1538369916518464e+34
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_mean_to_be_between",
+      "kwargs": {
+        "column": "Tag120U6",
+        "max_value": -4.995851165272089e+34,
+        "min_value": -4.995851165272089e+34
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_median_to_be_between",
+      "kwargs": {
+        "column": "Tag120U6",
+        "max_value": 1.5777219985211197e-30,
+        "min_value": 1.5777219985211197e-30
+      },
+      "meta": {}
+    }
+  ],
   "ge_cloud_id": null,
   "meta": {
+    "citations": [
+      {
+        "batch_request": {
+          "data_asset_name": "2020-10-01 09:46:27--2020-10-01 10:00:01.parquet",
+          "data_connector_name": "default_inferred_data_connector_name",
+          "datasource_name": "RSM9",
+          "limit": 1000
+        },
+        "citation_date": "2022-02-03T13:47:01.862127Z",
+        "comment": "Created suite added via CLI"
+      }
+    ],
     "great_expectations_version": "0.14.4"
   }
 }
