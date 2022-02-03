@@ -1,27 +1,44 @@
 from airflow import AirflowException
+import pandas as pd
 from airflow.operators.python_operator import PythonOperator
 import great_expectations as ge
+import boto
+import great_expectations as ge
+from great_expectations.core.batch import BatchRequest, RuntimeBatchRequest
 
-...
 
-def validate_data(ds, **kwargs):
+c= boto.connect_s3()
 
-    # Retrieve your data context
+bucket= c.lookup("omni-upload-mahle")
+bucket_files = bucket.list('production_rsm9_bp/')
+l=[(k.last_modified,k) for k in bucket_files]
+key_to_download = sorted(l, cmp=lambda x,y: cmp(x[0], y[0]))[-1][1]
+
+key_to_download.get_contents_to_filename('latestfile.parquet')
+
+df=pd.read_parquet('latestfile.parquet')
+
+def validate_data(expectation_suite, **kwargs):
+
+    # Retrieve data context
     context = ge.data_context.DataContext("path to great_expectations.yml")
 
-    # Create your batch_kwargs
-    batch_kwargs_file = {
-        "path": "path to data file",
-        "datasource": "my_pandas_datasource"}
+    # Create  batch_kwargs
+    batch_request_1 = RuntimeBatchRequest(
+        datasource_name="my_datasource",
+        data_connector_name="default_runtime_data_connector_name",
+        data_asset_name="batch1",   
+        runtime_parameters={"batch_data": df},  
+        batch_identifiers={"default_identifier_name": "batch_2"},
+    )
 
-    # Create your batch (batch_kwargs + expectation suite)
-    batch_file = context.get_batch(batch_kwargs_file, "expectation suite")
+    # Create batch (batch_kwargs + expectation suite)
+    batch_file = context.get_batch(batch_request_1, expectation_suite)
 
 
     results = context.run_validation_operator(
         "action_list_operator",
         assets_to_validate=[batch_file],
-        # This run_id can be whatever you choose
         run_id=f"airflow: {kwargs['dag_run'].run_id}:{kwargs['dag_run'].start_date}")
 
     # Handle result of validation
