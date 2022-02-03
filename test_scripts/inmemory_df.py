@@ -13,10 +13,10 @@ shutup.please()
 
 
 checkpoint_config = {
-    "name": "my_checkpoint2",
+    "name": "my_checkpoint",
     "config_version": 1,
     "class_name": "SimpleCheckpoint",
-    "expectation_suite_name": "suit6",
+    "expectation_suite_name": "RSM9_suite",
 }
 context.add_checkpoint(**checkpoint_config)
 
@@ -25,7 +25,7 @@ df_1 = pd.read_parquet("/home/dp-intern/Documents/MahleParquets/Data/2020-06-18 
 df_2 = pd.read_parquet("/home/dp-intern/Documents/MahleParquets/Data/2020-06-21 09:38:39--2020-06-21 09:53:40.parquet")
 
 batch_request_1 = RuntimeBatchRequest(
-    datasource_name="my_datasource",
+    datasource_name="RSM9",
     data_connector_name="default_runtime_data_connector_name",
     data_asset_name="batch1",   
     runtime_parameters={"batch_data": df_1},  # Pass your DataFrame here.
@@ -33,7 +33,7 @@ batch_request_1 = RuntimeBatchRequest(
 )
 
 batch_request_2 = RuntimeBatchRequest(
-    datasource_name="my_datasource",
+    datasource_name="RSM9",
     data_connector_name="default_runtime_data_connector_name",
     data_asset_name="batch_2",  # This can be anything that identifies this data_asset for you
     runtime_parameters={"batch_data": df_2},  # Pass your DataFrame here.
@@ -41,7 +41,7 @@ batch_request_2 = RuntimeBatchRequest(
 )
 
 results = context.run_checkpoint(
-    checkpoint_name="my_checkpoint2",
+    checkpoint_name="my_checkpoint",
     validations=[
         {"batch_request": batch_request_1},
         {"batch_request": batch_request_2},
