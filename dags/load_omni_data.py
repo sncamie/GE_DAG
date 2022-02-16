@@ -42,19 +42,22 @@ def load_bobs():
 
     df =pd.DataFrame(result)
     df.columns=['id','mean', 'median','bob_lower','bob_upper', 'created_at', 'updated_at', 'bob_id', 'parameter_id']
+    
+    #I had a hard time getting rid of the uuid format so saving to csv and loading again was the workaroud
 
     df.to_csv('data.csv')
 
 
     df2=pd.read_csv('data.csv')
 
-
+    #change parameter_id names to representative names for easier processing
     df2=df2.replace(to_replace=['29fa6a90-ca21-40ef-8a72-f7035aa69226','d52bbcba-f1f6-4885-8510-dbaa6f91a4e0','fcd34841-d2b5-46d5-bacc-0a934412b491','78f330e9-8900-45e4-aa76-1bc412d4d65d'],
     value=['CalibrationDriveSpeedPercent','FormingDriveSpeedPercent' ,'WeldCurrent','SpeedDifferencePercent'],
     )
 
     df3=df2.pivot(index='created_at', values=['median','bob_lower','bob_upper'], columns='parameter_id')
-
+    
+    #rename colums
 
     d= df3.columns.swaplevel().map('_'.join)
 
@@ -62,5 +65,5 @@ def load_bobs():
 
     df3.columns = d
 
-
+    #this is the directory where the expectations suite will go validate
     df3.to_csv('/home/ncamiso.khanyile/Data/bob_bobstats/bobs.csv')
