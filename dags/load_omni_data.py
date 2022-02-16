@@ -67,3 +67,39 @@ def load_bobs():
 
     #this is the directory where the expectations suite will go validate
     df3.to_csv('/home/ncamiso.khanyile/Data/bob_bobstats/bobs.csv')
+ 
+def load_prescribe_data():
+
+    model_query = """
+    select id as id, bob_upper as bob_upper, bob_lower as bob_lower,bob_median as bob_median,bob_target as bob_target,parameter_id as parameter_id
+    from prescribe_prescribereportdata 
+    where parameter_id =UUID('78f330e9-8900-45e4-aa76-1bc412d4d65d') or
+    parameter_id =UUID('d52bbcba-f1f6-4885-8510-dbaa6f91a4e0')
+    or parameter_id =UUID('fcd34841-d2b5-46d5-bacc-0a934412b491')
+    or parameter_id =UUID('29fa6a90-ca21-40ef-8a72-f7035aa69226')
+    limit 8000;;
+
+    """
+
+
+    with omni.conn as cur:
+        result = cur.execute(model_query).fetchall()
+
+
+
+    df =pd.DataFrame(result,columns=['id','bob_upper', 'bob_lower', 'bob_median','bob_target', 'parameter_id'])
+
+    df.to_csv('prescribe.csv')
+
+    df2=pd.read_csv('prescribe.csv')
+
+    df2=df2.replace(to_replace=['29fa6a90-ca21-40ef-8a72-f7035aa69226','d52bbcba-f1f6-4885-8510-dbaa6f91a4e0',
+        'fcd34841-d2b5-46d5-bacc-0a934412b491','78f330e9-8900-45e4-aa76-1bc412d4d65d'], value=['CalibrationDriveSpeedPercent','FormingDriveSpeedPercent' ,'WeldCurrent','SpeedDifferencePercent'])
+
+    df3=df2.pivot(index='id', values=['bob_upper', 'bob_lower', 'bob_median','bob_target'], columns='parameter_id')
+
+
+    d= df3.columns.swaplevel().map('_'.join)
+    df3.columns=df3.columns.droplevel(0)
+    df3.columns=d
+    df3.to_csv('/home/ncamiso.khanyile/Data/prescribe_prescribereportdata/prescribe.csv')
