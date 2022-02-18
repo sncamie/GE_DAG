@@ -4,6 +4,7 @@ param_path = "/omni/staging/databases/mahle_behr"
 omni= connect_omni_db(parameter_store_path=param_path)
 root_directory ='/home/ncamiso.khanyile/Data/'
 
+#Maybe consider using root directory + local_path as the save destination
 def load_omni_raw(loc_path):
 
     """Downloads raw data from data_store_rawvalue table saved in 
