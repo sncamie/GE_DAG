@@ -2,12 +2,14 @@ from great_expectations.core.batch import BatchRequest, RuntimeBatchRequest
 from great_expectations.rule_based_profiler.rule_based_profiler import \
     RuleBasedProfiler
 from ruamel import yaml
-
+import time
 import great_expectations as ge
 from great_expectations import DataContext
+from great_expectations.checkpoint import SimpleCheckpoint
 
 context = ge.get_context()
 
+start= time.time()
 
 profiler_config = """
 name: S3 raw profiler
@@ -47,10 +49,13 @@ rules:
           profiler_details: $parameter.column_count_range.details
   column_ranges_rule:
     domain_builder:
-      class_name: SimpleSemanticTypeColumnDomainBuilder
-      semantic_types:
-        - numeric
-      # BatchRequest yielding exactly one batch
+      class_name: ColumnDomainBuilder
+      column_names:
+
+        - mainplc/WeldCurrent_Scaled
+        - mainplc/SpeedDifferencePercent
+        - mainplc/FormingDriveSpeedPercent
+        - bsp/CalibrationDriveSpeedPercent_Scaled
       batch_request:
         datasource_name: RSM9
         data_connector_name: default_configured_data_connector_name
@@ -123,9 +128,12 @@ rule_based_profiler: RuleBasedProfiler = RuleBasedProfiler(
 expectation_suite_name="test_suite_name"
 suite = rule_based_profiler.run(expectation_suite_name=expectation_suite_name)
 
-print(suite)
+#print(suite)
 
 
+end = time.time()
+executionTime = (end - start)
+#print('Execution time in seconds: ' + str(executionTime))
 
 batch_request = BatchRequest(
     datasource_name="RSM9",
@@ -134,13 +142,15 @@ batch_request = BatchRequest(
     data_connector_query={"index": -1},
 )
 
-validator = context.get_validator(
-    batch_request=batch_request,
-    expectation_suite_name="test_suite_name",
-)
-validator.save_expectation_suite(suite, discard_failed_expectations=False)
+# validator = context.get_validator(
+#     batch_request=batch_request,
+#     expectation_suite_name=expectation_suite_name,
+# )
+#validator.save_expectation_suite(suite, discard_failed_expectations=False)
 
-print(validator.get_expectation_suite(discard_failed_expectations=False))
+context.save_expectation_suite(suite, overwrite_existing=True)
+
+#print(validator.get_expectation_suite(discard_failed_expectations=False))
 
 
 checkpoint_config = {
@@ -152,3 +162,27 @@ checkpoint_config = {
         }
     ],
 }
+
+
+
+my_checkpoint_name = "testcheck"  # This was populated from your CLI command.
+
+yaml_config = f"""
+name: {my_checkpoint_name}
+config_version: 1.0
+class_name: SimpleCheckpoint
+run_name_template: "%Y%m%d-%H%M%S-my-run-name-template"
+validations:
+  - batch_request:
+      datasource_name: RSM9
+      data_connector_name: default_configured_data_connector_name
+      data_asset_name: RSM9
+      data_connector_query:
+        index: -1
+    expectation_suite_name: test_suite_name
+"""
+
+
+#context.add_checkpoint(**yaml.load(yaml_config))
+context.run_checkpoint(checkpoint_name=my_checkpoint_name)
+

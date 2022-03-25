@@ -135,4 +135,3 @@ validator = context.get_validator(
     expectation_suite_name=expectation_suite_name,
 )
 
-print(validator.get_expectation_suite(discard_failed_expectations=False))
