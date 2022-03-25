@@ -7,7 +7,7 @@ checkpoint_name = f"{datasource_name}_checkpoint"
 
 
 # Data Asset fields
-database_conn = connect_param_store("staging")
+database_conn = db_options('staging','mahle_behr')
 include_schema_name = True
 schema_name = "public"
 table_name = "*bob_stats"
@@ -40,7 +40,7 @@ batch_request = RuntimeBatchRequest(
     data_asset_name=data_asset_name,
     runtime_parameters={"query": f"SELECT * FROM {data_asset_name} LIMIT 1000"},
     batch_identifiers={
-        "default_identifier_name": "First 1000 rows for profiling retail source data"
+        "default_identifier_name": "First 1000 rows"
     },
 )
 

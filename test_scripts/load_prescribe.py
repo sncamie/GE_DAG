@@ -17,11 +17,8 @@ import sqlalchemy
 from psycopg2.errors import UniqueViolation
 from omni.db import OmniParameterStoreDB, OmniDB
 
-shutup.please()
 
-os.environ['AWS_DEFAULT_REGION']='eu-west-1'
 
-context=ge.get_context()
 
 def connect_omni_db(**kwargs) -> OmniDB:
     """
@@ -67,5 +64,61 @@ def connect_omni_db(**kwargs) -> OmniDB:
     logging.info("Connected to OmniDB!")
     return omni_db
 
+
 param_path = "/omni/staging/databases/mahle_behr"
 omni= connect_omni_db(parameter_store_path=param_path)
+model_query = """
+select a.id as id, a.bob_upper as bob_upper, a.bob_lower as bob_lower,a.bob_median as bob_median,a.bob_target as bob_target, b.title
+from prescribe_prescribereportdata as a
+left join parameter_parameter as b
+on a.parameter_id=b.id 
+where b.title='FormingDriveSpeedPercent' or 
+b.title='WeldCurrent' or
+b.title='CalibrationDriveSpeedPercent'
+or b.title= 'SpeedDifferencePercent'
+
+ """
+
+
+with omni.conn as cur:
+     result = cur.execute(model_query).fetchall()
+
+
+
+# df =pd.DataFrame(result,columns=['id','bob_upper', 'bob_lower', 'bob_median','bob_target', 'parameter_id'])
+
+
+
+# df3=df.pivot(index='id', values=['bob_upper', 'bob_lower', 'bob_median','bob_target'], columns='parameter_id')
+
+
+# d= df3.columns.swaplevel().map('_'.join)
+# df3.columns=df3.columns.droplevel(0)
+# df3.columns=d
+# df3.to_csv('/home/ncamiso.khanyile/Data/prescribe_prescribereportdata/prescribe333.csv')
+# print(df3.head())
+
+
+
+def rename_columns(df):
+    """Renames the columns of a dataframe that has been pivoted.
+    returns a dataframe with column names in the form 
+    e.g. process_bob_lower
+
+    Args:
+        df (_dataframe_): _dataframe whose columns must be renamed_
+
+    Returns:
+        _type_: _renamed dataframe_
+    """
+    d= df.columns.swaplevel().map('_'.join)
+    df.columns = df.columns.droplevel(0)
+    df.columns=d
+    return df
+
+
+(pd.DataFrame(result,columns=['id','bob_upper', 'bob_lower', 'bob_median','bob_target', 'parameter_id'])
+    .pivot(index='id', values=['bob_upper', 'bob_lower', 'bob_median','bob_target'], columns='parameter_id')
+    .pipe(rename_columns)
+    .to_csv('/home/ncamiso.khanyile/Data/prescribe_prescribereportdata/prescribe333.csv')
+)

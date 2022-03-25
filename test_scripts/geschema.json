@@ -1,0 +1,43 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "geprofilingschema",
+    "title": "my json schema",
+    "description": "A schema used to build expectations for data",
+    "definitions": {
+        "column": {
+          "type": "string",
+          "minLength": 1
+        },
+        "mostly": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1.0
+        },
+        "set": {
+          "type": "array",
+          "minItems": 1
+        }
+      },
+      "type": "object",
+      "properties": {
+        "expectation_type": {
+          "type": "string",
+          "enum": [
+          
+            "expect_column_max_to_be_between",
+            "expect_column_mean_to_be_between",
+            "expect_column_median_to_be_between",
+            "expect_column_min_to_be_between",
+            "expect_column_to_exist",
+            "expect_column_values_to_be_between",
+            "expect_column_values_to_be_null",
+            "expect_column_values_to_be_of_type",
+            "expect_table_row_count_to_be_between",
+            "expect_table_row_count_to_equal"
+          ]
+        }
+      }
+
+
+
+}

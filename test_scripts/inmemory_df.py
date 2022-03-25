@@ -21,37 +21,32 @@ checkpoint_config = {
 context.add_checkpoint(**checkpoint_config)
 
 
-df_1 = pd.read_parquet("/home/dp-intern/Documents/MahleParquets/Data/2020-06-18 13:56:05--2020-06-18 14:11:05.parquet")
-df_2 = pd.read_parquet("/home/dp-intern/Documents/MahleParquets/Data/2020-06-21 09:38:39--2020-06-21 09:53:40.parquet")
+df_1= pd.read_parquet("s3://omni-upload-mahle/production_rsm9_bsp/2020-05-07T10:19:27/dataframe.parquet")
+df_2 = pd.read_parquet("s3://omni-upload-mahle/production_rsm9_bsp/Data/2020-07-08 02:40:57--2020-07-08 02:55:58.parquet")
 
 batch_request_1 = RuntimeBatchRequest(
     datasource_name="RSM9",
     data_connector_name="default_runtime_data_connector_name",
-    data_asset_name="batch1",   
+    data_asset_name="mahlefiles",  # This can be anything that identifies this data_asset for you
     runtime_parameters={"batch_data": df_1},  # Pass your DataFrame here.
-    batch_identifiers={"default_identifier_name": "batch_2"},
+    batch_identifiers={"default_identifier_name": "batch1"},
 )
 
 batch_request_2 = RuntimeBatchRequest(
     datasource_name="RSM9",
     data_connector_name="default_runtime_data_connector_name",
-    data_asset_name="batch_2",  # This can be anything that identifies this data_asset for you
+    data_asset_name="mahlefiles>",  # This can be anything that identifies this data_asset for you
     runtime_parameters={"batch_data": df_2},  # Pass your DataFrame here.
-    batch_identifiers={"default_identifier_name": "batch_1"},
+    batch_identifiers={"default_identifier_name": "batch2"},
 )
 
 results = context.run_checkpoint(
-    checkpoint_name="my_checkpoint",
+    checkpoint_name="my_missing_batch_request_checkpoint",
     validations=[
         {"batch_request": batch_request_1},
         {"batch_request": batch_request_2},
     ],
 )
-
-
-
-
-
 
 context.build_data_docs()
 

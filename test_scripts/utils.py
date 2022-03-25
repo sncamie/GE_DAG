@@ -1,27 +1,63 @@
-import os
 import logging
+import os
+import warnings
 from logging.config import fileConfig
-from dotenv import load_dotenv, find_dotenv
-from ruamel import yaml
+
 import great_expectations as ge
 from great_expectations.core.batch import BatchRequest, RuntimeBatchRequest
-import warnings
-import shutup
-warnings.simplefilter('ignore',yaml.error.UnsafeLoaderWarning)
+from ruamel import yaml
+
+warnings.simplefilter("ignore", yaml.error.UnsafeLoaderWarning)
 
 import pandas as pd
 import pytz
 import sqlalchemy
-
-
+from omni.db import OmniDB, OmniParameterStoreDB
 from psycopg2.errors import UniqueViolation
-from omni.db import OmniParameterStoreDB, OmniDB
 
-shutup.please()
 
-os.environ['AWS_DEFAULT_REGION']='eu-west-1'
+context = ge.get_context()
 
-context=ge.get_context()
+
+def connect_to_datasource(datasource_config: str) -> str:
+    """The Datasource provides an interface for a Data Connector and an Execution Engine
+    to work together and proper communication between Great Expectations and your source data systems.
+    configuration for each type of Datasource is slightly different and must be defined in the validation step.
+
+     e.g. s3 vs filesystem etc.
+
+
+    :type datasource_config: str
+    :return: A datasource for the project
+    :rtype: str
+    """
+
+    context.test_yaml_config(yaml.dump(datasource_config))
+    # context.create_expectation_suite(
+    #     expectation_suite_name="test_suite", overwrite_existing=True
+    #     )
+    # validator = context.get_validator(
+    #     batch_request=batch_request, expectation_suite_name="test_suite"
+    #     )
+    # print(validator.head())
+
+    context.add_datasource(**datasource_config)
+
+
+def create_checkpoint(checkpoint_name: str, checkpoint_config: str) -> str:
+    """Creates a checkpoint, which will be called by PythonOperator
+    in dag to run validation. The name is defined in the same manner as the datasource
+    and expectation suite. Stored in great_expectations/checkpoints/
+
+
+    :type checkpoint_name: str
+    :return: a checkpoint
+    :rtype: str
+    """
+
+    context.test_yaml_config(yaml_config=checkpoint_config, pretty_print=True)
+    context.add_checkpoint(**yaml.load(checkpoint_config))
+
 
 def connect_omni_db(**kwargs) -> OmniDB:
     """
@@ -66,6 +102,3 @@ def connect_omni_db(**kwargs) -> OmniDB:
         )
     logging.info("Connected to OmniDB!")
     return omni_db
-
-param_path = "/omni/staging/databases/mahle_behr"
-omni= connect_omni_db(parameter_store_path=param_path)

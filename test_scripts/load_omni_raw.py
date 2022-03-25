@@ -17,11 +17,8 @@ import sqlalchemy
 from psycopg2.errors import UniqueViolation
 from omni.db import OmniParameterStoreDB, OmniDB
 
-shutup.please()
 
-os.environ['AWS_DEFAULT_REGION']='eu-west-1'
 
-context=ge.get_context()
 
 def connect_omni_db(**kwargs) -> OmniDB:
     """
@@ -67,5 +64,37 @@ def connect_omni_db(**kwargs) -> OmniDB:
     logging.info("Connected to OmniDB!")
     return omni_db
 
+
 param_path = "/omni/staging/databases/mahle_behr"
 omni= connect_omni_db(parameter_store_path=param_path)
+model_query = """
+select a.timestamp, a.value, b.title
+
+from data_store_rawvalue as a
+
+left join parameter_parameter as b
+on a.parameter_id=b.id 
+where b.title='FormingDriveSpeedPercent' or 
+b.title='WeldCurrent' or
+b.title='CalibrationDriveSpeedPercent'
+or b.title= 'SpeedDifferencePercent'
+and a.timestamp >=now()-interval '40 minutes';
+
+ """
+
+#model_query = "select * from data_store_rawvalue where parameter_id =UUID('78f330e9-8900-45e4-aa76-1bc412d4d65d') and timestamp >=now()-interval '10 minutes'"
+with omni.conn as cur:
+     result = cur.execute(model_query).fetchall()
+
+
+
+
+
+df =pd.DataFrame(result, columns=['timestamp', 'value', 'parameter_id'])
+
+
+df2=df.pivot(index='timestamp', values='value', columns='parameter_id')
+
+print(df2.head())
+
+df2.to_csv('/home/ncamiso.khanyile/Data/data_store_rawvalue/latestfile_time_limit.csv')

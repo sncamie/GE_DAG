@@ -6,33 +6,22 @@ import great_expectations as ge
 from great_expectations.core.batch import BatchRequest, RuntimeBatchRequest
 
 
-c= boto.connect_s3()
-
-bucket= c.lookup("omni-upload-mahle")
-bucket_files = bucket.list('production_rsm9_bp/')
-l=[(k.last_modified,k) for k in bucket_files]
-key_to_download = sorted(l, cmp=lambda x,y: cmp(x[0], y[0]))[-1][1]
-
-key_to_download.get_contents_to_filename('latestfile.parquet')
-
-df=pd.read_parquet('latestfile.parquet')
-
 def validate_data(expectation_suite, **kwargs):
 
     # Retrieve data context
-    context = ge.data_context.DataContext("/home/dp-intern/Documents/GE_Dag/great_expectations/great_expectations.yml")
+    context = ge.data_context.DataContext("/home/ncamiso.khanyile/great_expectations/great_expectations.yml")
 
     # Create  batch_kwargs
-    batch_request_1 = RuntimeBatchRequest(
-        datasource_name="RSM9",
-        data_connector_name="default_runtime_data_connector_name",
-        data_asset_name="batch1",   
-        runtime_parameters={"batch_data": df},  
-        batch_identifiers={"default_identifier_name": "latest batch"},
+    batch_request_3 = RuntimeBatchRequest(
+    datasource_name= "RSM9",
+    data_connector_name="default_runtime_data_connector_name",
+    data_asset_name="mahlefiles",  
+    runtime_parameters={"path": "s3://omni-upload-mahle/production_rsm9_bsp/2020-05-07T10:19:27/dataframe.parquet"},  
+    batch_identifiers={"default_identifier_name": "default_identifier"},
     )
 
     # Create batch (batch_kwargs + expectation suite)
-    batch_file = context.get_batch(batch_request_1, expectation_suite)
+    batch_file = context.get_batch(batch_request_3, expectation_suite)
 
 
     results = context.run_validation_operator(

@@ -1,0 +1,1113 @@
+````
+/*eslint-disable quotes */
+
+const expectationSchema = {
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Schema defining proper expectation formats.",
+  "definitions": {
+    "column": {
+      "type": "string",
+      "minLength": 1
+    },
+    "mostly": {
+      "type": "number",
+      "minimum": 0,
+      "exclusiveMinimum": true,
+      "maximum": 1,
+      "exclusiveMaximum": true
+    },
+    "set": {
+      "type": "array",
+      "minItems": 1
+    }
+  },
+  "type": "object",
+  "properties": {
+    "expectation_type": {
+      "type": "string",
+      "enum": [
+      
+        "expect_column_max_to_be_between",
+        "expect_column_mean_to_be_between",
+        "expect_column_median_to_be_between",
+        "expect_column_min_to_be_between",
+        "expect_column_to_exist",
+        "expect_column_values_to_be_between",
+        "expect_column_values_to_be_dateutil_parseable",
+        "expect_column_values_to_be_decreasing",
+        "expect_column_values_to_be_in_set",
+        "expect_column_values_to_be_in_type_list",
+        "expect_column_values_to_be_increasing",
+        "expect_column_values_to_be_json_parseable",
+        "expect_column_values_to_be_null",
+        "expect_column_values_to_be_of_type",
+        "expect_table_row_count_to_be_between",
+        "expect_table_row_count_to_equal"
+      ]
+    },
+    "kwargs": {
+      "type": "object"
+    }
+  },
+  "anyOf": [
+    {
+      "properties": {
+        "expectation_type": {
+          "enum": [
+            "expect_column_bootstrapped_ks_test_p_value_to_be_greater_than"
+          ]
+        },
+        "kwargs": {
+          "type": "object",
+          "properties": {
+            "column": {"$ref": "#/definitions/column"},
+            "partition_object": {},
+            "p": {},
+            "bootstrap_samples": {},
+            "bootstrap_sample_size": {},
+            "output_format": {},
+            "include_config": {},
+            "catch_exceptions": {},
+            "meta": {}
+          },
+          "required": [
+            "column", "partition_object", "p"
+          ]
+        }
+      }
+    },
+    {
+      "properties": {
+        "expectation_type": {
+          "enum": [
+            "expect_column_chisquare_test_p_value_to_be_greater_than"
+          ]
+        },
+        "kwargs": {
+          "type": "object",
+          "properties": {
+            "column": {"$ref": "#/definitions/column"},
+            "partition_object": {},
+            "p": {},
+            "tail_weight_holdout": {},
+            "output_format": {},
+            "include_config": {},
+            "catch_exceptions": {},
+            "meta": {}
+          },
+          "required": [
+            "column", "partition_object", "p"
+          ]
+        }
+      }
+    },
+    {
+      "properties": {
+        "expectation_type": {
+          "enum": [
+            "expect_column_kl_divergence_to_be_less_than"
+          ]
+        },
+        "kwargs": {
+          "type": "object",
+          "properties": {
+            "column": {"$ref": "#/definitions/column"},
+            "partition_object": {},
+            "threshold": {},
+            "tail_weight_holdout": {},
+            "internal_weight_holdout": {},
+            "output_format": {},
+            "include_config": {},
+            "catch_exceptions": {},
+            "meta": {}
+          },
+          "required": [
+            "column", "partition_object", "threshold"
+          ]
+        }
+      }
+    },
+    {
+      "properties": {
+        "expectation_type": {
+          "enum": [
+            "expect_column_max_to_be_between"
+          ]
+        },
+        "kwargs": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "column": {"$ref": "#/definitions/column"},
+                "min_value": {"type": "number"},
+                "max_value": {"type": "number"},
+                "parse_strings_as_datetimes": {},
+                "output_strftime_format": {},
+                "output_format": {},
+                "include_config": {},
+                "catch_exceptions": {},
+                "meta": {}
+              },
+              "required": [
+                "column", "min_value"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "column": {"$ref": "#/definitions/column"},
+                "min_value": {"type": "number"},
+                "max_value": {"type": "number"},
+                "parse_strings_as_datetimes": {},
+                "output_strftime_format": {},
+                "output_format": {},
+                "include_config": {},
+                "catch_exceptions": {},
+                "meta": {}
+              },
+              "required": [
+                "column", "max_value"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "properties": {
+        "expectation_type": {
+          "enum": [
+            "expect_column_mean_to_be_between"
+          ]
+        },
+        "kwargs": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "column": {"$ref": "#/definitions/column"},
+                "min_value": {"type": "number"},
+                "max_value": {"type": "number"},
+                "output_format": {},
+                "include_config": {},
+                "catch_exceptions": {},
+                "meta": {}
+              },
+              "required": [
+                "column", "min_value"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "column": {"$ref": "#/definitions/column"},
+                "min_value": {"type": "number"},
+                "max_value": {"type": "number"},
+                "output_format": {},
+                "include_config": {},
+                "catch_exceptions": {},
+                "meta": {}
+              },
+              "required": [
+                "column", "max_value"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "properties": {
+        "expectation_type": {
+          "enum": [
+            "expect_column_median_to_be_between"
+          ]
+        },
+        "kwargs": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "column": {"$ref": "#/definitions/column"},
+                "min_value": {"type": "number"},
+                "max_value": {"type": "number"},
+                "output_format": {},
+                "include_config": {},
+                "catch_exceptions": {},
+                "meta": {}
+              },
+              "required": [
+                "column", "min_value"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "column": {"$ref": "#/definitions/column"},
+                "min_value": {"type": "number"},
+                "max_value": {"type": "number"},
+                "output_format": {},
+                "include_config": {},
+                "catch_exceptions": {},
+                "meta": {}
+              },
+              "required": [
+                "column", "max_value"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "properties": {
+        "expectation_type": {
+          "enum": [
+            "expect_column_min_to_be_between"
+          ]
+        },
+        "kwargs": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "column": {"$ref": "#/definitions/column"},
+                "min_value": {"type": "number"},
+                "max_value": {"type": "number"},
+                "parse_strings_as_datetimes": {},
+                "output_strftime_format": {},
+                "output_format": {},
+                "include_config": {},
+                "catch_exceptions": {},
+                "meta": {}
+              },
+              "required": [
+                "column", "min_value"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "column": {"$ref": "#/definitions/column"},
+                "min_value": {"type": "number"},
+                "max_value": {"type": "number"},
+                "parse_strings_as_datetimes": {},
+                "output_strftime_format": {},
+                "output_format": {},
+                "include_config": {},
+                "catch_exceptions": {},
+                "meta": {}
+              },
+              "required": [
+                "column", "max_value"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "properties": {
+        "expectation_type": {
+          "enum": [
+            "expect_column_most_common_value_to_be_in_set"
+          ]
+        },
+        "kwargs": {
+          "type": "object",
+          "properties": {
+            "column": {"$ref": "#/definitions/column"},
+            "value_set": {"$ref": "#/definitions/set"},
+            "ties_okay": {},
+            "output_format": {},
+            "include_config": {},
+            "catch_exceptions": {},
+            "meta": {}
+          },
+          "required": [
+            "column",
+            "value_set"
+          ]
+        }
+      }
+    },
+    {
+      "properties": {
+        "expectation_type": {
+          "enum": [
+            "expect_column_proportion_of_unique_values_to_be_between"
+          ]
+        },
+        "kwargs": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "column": {"$ref": "#/definitions/column"},
+                "min_value": {"type": "number"},
+                "max_value": {"type": "number"},
+                "output_format": {},
+                "include_config": {},
+                "catch_exceptions": {},
+                "meta": {}
+              },
+              "required": [
+                "column", "min_value"
+              ] 
+            },
+            {
+              "type": "object",
+              "properties": {
+                "column": {"$ref": "#/definitions/column"},
+                "min_value": {"type": "number"},
+                "max_value": {"type": "number"},
+                "output_format": {},
+                "include_config": {},
+                "catch_exceptions": {},
+                "meta": {}
+              },
+              "required": [
+                "column", "max_value"
+              ] 
+            }
+          ]
+        }
+      }
+    },
+    {
+      "properties": {
+        "expectation_type": {
+          "enum": [
+            "expect_column_stdev_to_be_between"
+          ]
+        },
+        "kwargs": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "column": {"$ref": "#/definitions/column"},
+                "min_value": {"type": "number"},
+                "max_value": {"type": "number"},
+                "output_format": {},
+                "include_config": {},
+                "catch_exceptions": {},
+                "meta": {}
+              }, 
+              "required": [
+                "column", "min_value"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "column": {"$ref": "#/definitions/column"},
+                "min_value": {"type": "number"},
+                "max_value": {"type": "number"},
+                "output_format": {},
+                "include_config": {},
+                "catch_exceptions": {},
+                "meta": {}
+              }, 
+              "required": [
+                "column", "max_value"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "properties": {
+        "expectation_type": {
+          "enum": [
+            "expect_column_sum_to_be_between"
+          ]
+        },
+        "kwargs": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "column": {"$ref": "#/definitions/column"},
+                "min_value": {"type": "number"},
+                "max_value": {"type": "number"},
+                "output_format": {},
+                "include_config": {},
+                "catch_exceptions": {},
+                "meta": {}
+              },
+              "required": [
+                "column", "min_value"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "column": {"$ref": "#/definitions/column"},
+                "min_value": {"type": "number"},
+                "max_value": {"type": "number"},
+                "output_format": {},
+                "include_config": {},
+                "catch_exceptions": {},
+                "meta": {}
+              },
+              "required": [
+                "column", "max_value"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "properties": {
+        "expectation_type": {
+          "enum": [
+            "expect_column_to_exist"
+          ]
+        },
+        "kwargs": {
+          "type": "object",
+          "properties": {
+            "column": {"$ref": "#/definitions/column"},
+            "output_format": {},
+            "include_config": {},
+            "catch_exceptions": {},
+            "meta": {}
+          }, 
+          "required": [
+            "column"
+          ]
+        }
+      }
+    },
+    {
+      "properties": {
+        "expectation_type": {
+          "enum": [
+            "expect_column_unique_value_count_to_be_between"
+          ]
+        },
+        "kwargs": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "column": {"$ref": "#/definitions/column"},
+                "min_value": {"type": "number"},
+                "max_value": {"type": "number"},
+                "output_format": {},
+                "include_config": {},
+                "catch_exceptions": {},
+                "meta": {}
+              },
+              "required": [
+                "column", "min_value"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "column": {"$ref": "#/definitions/column"},
+                "min_value": {"type": "number"},
+                "max_value": {"type": "number"},
+                "output_format": {},
+                "include_config": {},
+                "catch_exceptions": {},
+                "meta": {}
+              },
+              "required": [
+                "column", "max_value"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "properties": {
+        "expectation_type": {
+          "enum": [
+            "expect_column_value_lengths_to_be_between"
+          ]
+        },
+        "kwargs": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "column": {"$ref": "#/definitions/column"},
+                "min_value": {"type": "number"},
+                "max_value": {"type": "number"},
+                "mostly": {"$ref": "#/definitions/mostly"},
+                "output_format": {},
+                "include_config": {},
+                "catch_exceptions": {},
+                "meta": {}
+              },
+              "required": [
+                "column",
+                "min_value"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "column": {"$ref": "#/definitions/column"},
+                "min_value": {"type": "number"},
+                "max_value": {"type": "number"},
+                "mostly": {"$ref": "#/definitions/mostly"},
+                "output_format": {},
+                "include_config": {},
+                "catch_exceptions": {},
+                "meta": {}
+              },
+              "required": [
+                "column",
+                "max_value"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "properties": {
+        "expectation_type": {
+          "enum": [
+            "expect_column_value_lengths_to_equal"
+          ]
+        },
+        "kwargs": {
+          "type": "object",
+          "properties": {
+            "column": {"$ref": "#/definitions/column"},
+            "value": {},
+            "mostly": {"$ref": "#/definitions/mostly"},
+            "output_format": {},
+            "include_config": {},
+            "catch_exceptions": {},
+            "meta": {}
+          },
+          "required": [
+            "column",
+            "value"
+          ]
+        }
+      }
+    },
+    {
+      "properties": {
+        "expectation_type": {
+          "enum": [
+            "expect_column_values_to_be_between"
+          ]
+        },
+        "kwargs": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "column": {"$ref": "#/definitions/column"},
+                "min_value": {"type": "number"},
+                "max_value": {"type": "number"},
+                "parse_strings_as_datetimes": {},
+                "allow_cross_type_comparisons": {},
+                "mostly": {"$ref": "#/definitions/mostly"},
+                "output_format": {},
+                "include_config": {},
+                "catch_exceptions": {},
+                "meta": {}
+              },
+              "required": [
+                "column", "min_value"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "column": {"$ref": "#/definitions/column"},
+                "min_value": {"type": "number"},
+                "max_value": {"type": "number"},
+                "parse_strings_as_datetimes": {},
+                "allow_cross_type_comparisons": {},
+                "mostly": {"$ref": "#/definitions/mostly"},
+                "output_format": {},
+                "include_config": {},
+                "catch_exceptions": {},
+                "meta": {}
+              },
+              "required": [
+                "column", "max_value"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "properties": {
+        "expectation_type": {
+          "enum": [
+            "expect_column_values_to_be_dateutil_parseable"
+          ]
+        },
+        "kwargs": {
+          "type": "object",
+          "properties": {
+            "column": {"$ref": "#/definitions/column"},
+            "mostly": {"$ref": "#/definitions/mostly"},
+            "output_format": {},
+            "include_config": {},
+            "catch_exceptions": {},
+            "meta": {}
+          },
+          "required": [
+            "column"
+          ]
+        }
+      }
+    },
+    {
+      "properties": {
+        "expectation_type": {
+          "enum": [
+            "expect_column_values_to_be_decreasing"
+          ]
+        },
+        "kwargs": {
+          "type": "object",
+          "properties": {
+            "column": {"$ref": "#/definitions/column"},
+            "strictly": {},
+            "parse_strings_as_datetimes": {},
+            "mostly": {"$ref": "#/definitions/mostly"},
+            "output_format": {},
+            "include_config": {},
+            "catch_exceptions": {},
+            "meta": {}
+          },
+          "required": [
+            "column"
+          ]
+        }
+      }
+    },
+    {
+      "properties": {
+        "expectation_type": {
+          "enum": [
+            "expect_column_values_to_be_in_set"
+          ]
+        },
+        "kwargs": {
+          "type": "object",
+          "properties": {
+            "column": {"$ref": "#/definitions/column"},
+            "values_set": {"$ref": "#/definitions/set"},
+            "mostly": {"$ref": "#/definitions/mostly"},
+            "output_format": {},
+            "include_config": {},
+            "catch_exceptions": {},
+            "meta": {}
+          },
+          "required": [
+            "column",
+            "values_set"
+          ]
+        }
+      }
+    },
+    {
+      "properties": {
+        "expectation_type": {
+          "enum": [
+            "expect_column_values_to_be_in_type_list"
+          ]
+        },
+        "kwargs": {
+          "type": "object",
+          "properties": {
+            "column": {"$ref": "#/definitions/column"},
+            "type_list": {},
+            "target_datasource": {},
+            "mostly": {"$ref": "#/definitions/mostly"},
+            "output_format": {},
+            "include_config": {},
+            "catch_exceptions": {},
+            "meta": {}
+          },
+          "required": [
+            "column",
+            "type_list"
+          ]
+        }
+      }
+    },
+    {
+      "properties": {
+        "expectation_type": {
+          "enum": [
+            "expect_column_values_to_be_increasing"
+          ]
+        },
+        "kwargs": {
+          "type": "object",
+          "properties": {
+            "column": {"$ref": "#/definitions/column"},
+            "strictly": {},
+            "parse_strings_as_datetimes": {},
+            "mostly": {"$ref": "#/definitions/mostly"},
+            "output_format": {},
+            "include_config": {},
+            "catch_exceptions": {},
+            "meta": {}
+          },
+          "required": [
+            "column"
+          ]
+        }
+      }
+    },
+    {
+      "properties": {
+        "expectation_type": {
+          "enum": [
+            "expect_column_values_to_be_json_parseable"
+          ]
+        },
+        "kwargs": {
+          "type": "object",
+          "properties": {
+            "column": {"$ref": "#/definitions/column"},
+            "mostly": {"$ref": "#/definitions/mostly"},
+            "output_format": {},
+            "include_config": {},
+            "catch_exceptions": {},
+            "meta": {}
+          },
+          "required": [
+            "column"
+          ]
+        }
+      }
+    },
+    {
+      "properties": {
+        "expectation_type": {
+          "enum": [
+            "expect_column_values_to_be_null"
+          ]
+        },
+        "kwargs": {
+          "type": "object",
+          "properties": {
+            "column": {"$ref": "#/definitions/column"},
+            "mostly": {"$ref": "#/definitions/mostly"},
+            "output_format": {},
+            "include_config": {},
+            "catch_exceptions": {},
+            "meta": {}
+          },
+          "required": [
+            "column"
+          ]
+        }
+      }
+    },
+    {
+      "properties": {
+        "expectation_type": {
+          "enum": [
+            "expect_column_values_to_be_of_type"
+          ]
+        },
+        "kwargs": {
+          "type": "object",
+          "properties": {
+            "column": {"$ref": "#/definitions/column"},
+            "type_": {},
+            "target_datasource": {},
+            "mostly": {"$ref": "#/definitions/mostly"},
+            "output_format": {},
+            "include_config": {},
+            "catch_exceptions": {},
+            "meta": {}
+          },
+          "required": [
+            "column",
+            "type_"
+          ]
+        }
+      }
+    },
+    {
+      "properties": {
+        "expectation_type": {
+          "enum": [
+            "expect_column_values_to_be_unique"
+          ]
+        },
+        "kwargs": {
+          "type": "object",
+          "properties": {
+            "column": {"$ref": "#/definitions/column"},
+            "mostly": {"$ref": "#/definitions/mostly"},
+            "output_format": {},
+            "include_config": {},
+            "catch_exceptions": {},
+            "meta": {}
+          },
+          "required": [
+            "column"
+          ]
+        }
+      }
+    },
+    {
+      "properties": {
+        "expectation_type": {
+          "enum": [
+            "expect_column_values_to_match_json_schema"
+          ]
+        },
+        "kwargs": {
+          "type": "object",
+          "properties": {
+            "column": {"$ref": "#/definitions/column"},
+            "json_schema": {},
+            "mostly": {"$ref": "#/definitions/mostly"},
+            "output_format": {},
+            "include_config": {},
+            "catch_exceptions": {},
+            "meta": {}
+          },
+          "required": [
+            "column",
+            "json_schema"
+          ]
+        }
+      }
+    },
+    {
+      "properties": {
+        "expectation_type": {
+          "enum": [
+            "expect_column_values_to_match_regex"
+          ]
+        },
+        "kwargs": {
+          "type": "object",
+          "properties": {
+            "column": {"$ref": "#/definitions/column"},
+            "regex": {},
+            "mostly": {"$ref": "#/definitions/mostly"},
+            "output_format": {},
+            "include_config": {},
+            "catch_exceptions": {},
+            "meta": {}
+          },
+          "required": [
+            "column",
+            "regex"
+          ]
+        }
+      }
+    },
+    {
+      "properties": {
+        "expectation_type": {
+          "enum": [
+            "expect_column_values_to_match_regex_list"
+          ]
+        },
+        "kwargs": {
+          "type": "object",
+          "properties": {
+            "column": {"$ref": "#/definitions/column"},
+            "regex_list": {},
+            "match_on": {},
+            "mostly": {"$ref": "#/definitions/mostly"},
+            "output_format": {},
+            "include_config": {},
+            "catch_exceptions": {},
+            "meta": {}
+          },
+          "required": [
+            "column",
+            "regex_list"
+          ]
+        }
+      }
+    },
+    {
+      "properties": {
+        "expectation_type": {
+          "enum": [
+            "expect_column_values_to_match_strftime_format"
+          ]
+        },
+        "kwargs": {
+          "type": "object",
+          "properties": {
+            "column": {"$ref": "#/definitions/column"},
+            "strftime_format": {},
+            "mostly": {"$ref": "#/definitions/mostly"},
+            "output_format": {},
+            "include_config": {},
+            "catch_exceptions": {},
+            "meta": {}
+          },
+          "required": [
+            "column",
+            "strftime_format"
+          ]
+        }
+      }
+    },
+    {
+      "properties": {
+        "expectation_type": {
+          "enum": [
+            "expect_column_values_to_not_be_in_set"
+          ]
+        },
+        "kwargs": {
+          "type": "object",
+          "properties": {
+            "column": {"$ref": "#/definitions/column"},
+            "values_set": {"$ref": "#/definitions/set"},
+            "mostly": {"$ref": "#/definitions/mostly"},
+            "output_format": {},
+            "include_config": {},
+            "catch_exceptions": {},
+            "meta": {}
+          },
+          "required": [
+            "column",
+            "values_set"
+          ]
+        }
+      }
+    },
+    {
+      "properties": {
+        "expectation_type": {
+          "enum": [
+            "expect_column_values_to_not_be_null"
+          ]
+        },
+        "kwargs": {
+          "type": "object",
+          "properties": {
+            "column": {"$ref": "#/definitions/column"},
+            "mostly": {"$ref": "#/definitions/mostly"},
+            "output_format": {},
+            "include_config": {},
+            "catch_exceptions": {},
+            "meta": {}
+          },
+          "required": [
+            "column"
+          ]
+        }
+      }
+    },
+    {
+      "properties": {
+        "expectation_type": {
+          "enum": [
+            "expect_column_values_to_not_match_regex"
+          ]
+        },
+        "kwargs": {
+          "type": "object",
+          "properties": {
+            "column": {"$ref": "#/definitions/column"},
+            "regex": {},
+            "mostly": {"$ref": "#/definitions/mostly"},
+            "output_format": {},
+            "include_config": {},
+            "catch_exceptions": {},
+            "meta": {}
+          },
+          "required": [
+            "column",
+            "regex"
+          ]
+        }
+      }
+    },
+    {
+      "properties": {
+        "expectation_type": {
+          "enum": [
+            "expect_table_row_count_to_be_between"
+          ]
+        },
+        "kwargs": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "min_value": {"type": "number"},
+                "max_value": {"type": "number"},
+                "output_format": {},
+                "include_config": {},
+                "catch_exceptions": {},
+                "meta": {}
+              },
+              "required": [
+                "min_value"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "min_value": {"type": "number"},
+                "max_value": {"type": "number"},
+                "output_format": {},
+                "include_config": {},
+                "catch_exceptions": {},
+                "meta": {}
+              },
+              "required": [
+                "max_value"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "properties": {
+        "expectation_type": {
+          "enum": [
+            "expect_table_row_count_to_equal"
+          ]
+        },
+        "kwargs": {
+          "type": "object",
+          "properties": {
+            "value": {},
+            "output_format": {},
+            "include_config": {},
+            "catch_exceptions": {},
+            "meta": {}
+          },
+          "required": [
+            "value"
+          ]
+        }
+      }
+    }
+  ],
+  "required": [
+    "expectation_type", "kwargs"
+  ]
+};
+
+export default expectationSchema;
+```
