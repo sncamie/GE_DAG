@@ -1,6 +1,5 @@
 from great_expectations.core.batch import BatchRequest, RuntimeBatchRequest
-from great_expectations.rule_based_profiler.rule_based_profiler import \
-    RuleBasedProfiler
+from great_expectations.rule_based_profiler.rule_based_profiler import RuleBasedProfiler
 from ruamel import yaml
 import time
 import great_expectations as ge
@@ -9,7 +8,7 @@ from great_expectations.checkpoint import SimpleCheckpoint
 
 context = ge.get_context()
 
-start= time.time()
+start = time.time()
 
 profiler_config = """
 name: S3 raw profiler
@@ -28,7 +27,7 @@ variables:
 rules:
   column_set_rule:
     domain_builder:
-        class_name: TableDomainBuilder
+        class_name: ColumnDomainBuilder
         module_name: great_expectations.rule_based_profiler.domain_builder
         batch_request: $variables.batch_request
 
@@ -66,7 +65,7 @@ rule_based_profiler: RuleBasedProfiler = RuleBasedProfiler(
     data_context=data_context,
 )
 
-expectation_suite_name="string_suite"
+expectation_suite_name = "string_suite"
 suite = rule_based_profiler.run(expectation_suite_name=expectation_suite_name)
 
 context.save_expectation_suite(suite, overwrite_existing=True)

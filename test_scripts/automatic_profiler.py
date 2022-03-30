@@ -1,15 +1,15 @@
-from great_expectations.core.batch import BatchRequest, RuntimeBatchRequest
-from great_expectations.rule_based_profiler.rule_based_profiler import \
-    RuleBasedProfiler
-from ruamel import yaml
 import time
+
 import great_expectations as ge
 from great_expectations import DataContext
 from great_expectations.checkpoint import SimpleCheckpoint
+from great_expectations.core.batch import BatchRequest, RuntimeBatchRequest
+from great_expectations.rule_based_profiler.rule_based_profiler import RuleBasedProfiler
+from ruamel import yaml
 
 context = ge.get_context()
 
-start= time.time()
+start = time.time()
 
 profiler_config = """
 name: S3 raw profiler
@@ -86,6 +86,13 @@ rules:
         metric_domain_kwargs: $domain.domain_kwargs
         false_positive_rate: $variables.false_positive_rate
         round_decimals: 2
+      - name: mean_range
+        class_name: NumericMetricRangeMultiBatchParameterBuilder
+        batch_request: $variables.batch_request
+        metric_name: column.mean
+        metric_domain_kwargs: $domain.domain_kwargs
+        false_positive_rate: $variables.false_positive_rate
+        round_decimals: 2
     expectation_configuration_builders:
       - expectation_type: expect_column_min_to_be_between
         class_name: DefaultExpectationConfigurationBuilder
@@ -102,6 +109,15 @@ rules:
         column: $domain.domain_kwargs.column
         min_value: $parameter.max_range.value.value_range[0]
         max_value: $parameter.max_range.value.value_range[1]
+        mostly: $variables.mostly
+        meta:
+          profiler_details: $parameter.max_range.details
+      - expectation_type: expect_column_mean_to_be_between
+        class_name: DefaultExpectationConfigurationBuilder
+        module_name: great_expectations.rule_based_profiler.expectation_configuration_builder
+        column: $domain.domain_kwargs.column
+        min_value: $parameter.mean_range.value.value_range[0]
+        max_value: $parameter.mean_range.value.value_range[1]
         mostly: $variables.mostly
         meta:
           profiler_details: $parameter.max_range.details
@@ -160,64 +176,8 @@ rule_based_profiler: RuleBasedProfiler = RuleBasedProfiler(
     data_context=data_context,
 )
 
-expectation_suite_name="my5_suite_name"
+expectation_suite_name = "my_suite_name"  # change the suite name to the one you want
 suite = rule_based_profiler.run(expectation_suite_name=expectation_suite_name)
 
-#print(suite)
-
-
-end = time.time()
-executionTime = (end - start)
-#print('Execution time in seconds: ' + str(executionTime))
-
-batch_request = BatchRequest(
-    datasource_name="RSM9",
-    data_connector_name="default_configured_data_connector_name",
-    data_asset_name="RSM9",
-    data_connector_query={"index": -1},
-)
-
-# validator = context.get_validator(
-#     batch_request=batch_request,
-#     expectation_suite_name=expectation_suite_name,
-# )
-#validator.save_expectation_suite(suite, discard_failed_expectations=False)
 
 context.save_expectation_suite(suite, overwrite_existing=True)
-
-#print(validator.get_expectation_suite(discard_failed_expectations=False))
-
-
-checkpoint_config = {
-    "class_name": "SimpleCheckpoint",
-    "validations": [
-        {
-            "batch_request": batch_request,
-            "expectation_suite_name": "test_suite_name",
-        }
-    ],
-}
-
-
-
-my_checkpoint_name = "testcheck"  # This was populated from your CLI command.
-
-yaml_config = f"""
-name: {my_checkpoint_name}
-config_version: 1.0
-class_name: SimpleCheckpoint
-run_name_template: "%Y%m%d-%H%M%S-my-run-name-template"
-validations:
-  - batch_request:
-      datasource_name: RSM9
-      data_connector_name: default_configured_data_connector_name
-      data_asset_name: RSM9
-      data_connector_query:
-        index: -1
-    expectation_suite_name: test_suite_name
-"""
-
-
-#context.add_checkpoint(**yaml.load(yaml_config))
-context.run_checkpoint(checkpoint_name=my_checkpoint_name)
-
