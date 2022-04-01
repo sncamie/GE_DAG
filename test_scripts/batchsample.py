@@ -7,7 +7,7 @@ batch_request= BatchRequest(
     data_connector_name="default_configured_data_connector_name",
     data_asset_name="RSM9",
     data_connector_query= {"index": "-11:-1"},
-    #batch_spec_passthrough = {"sampling_method":"_sample_using_random", "sampling_kwargs":{"p": 0.2} },
+    batch_spec_passthrough = {"sampling_method":"_sample_using_random", "sampling_kwargs":{"p": 0.2} },
 
 )
 
