@@ -27,15 +27,9 @@ variables:
 rules:
   column_set_rule:
     domain_builder:
-        class_name: ColumnDomainBuilder
+        class_name: TableDomainBuilder
         module_name: great_expectations.rule_based_profiler.domain_builder
         batch_request: $variables.batch_request
-
-        include_column_names:
-            - mainplc/WeldCurrent_Scaled
-            - mainplc/SpeedDifferencePercent
-            - mainplc/FormingDriveSpeedPercent
-            - bsp/CalibrationDriveSpeedPercent_Scaled
     parameter_builders:
       - name: column_value_set
         class_name: ValueSetMultiBatchParameterBuilder
@@ -43,7 +37,7 @@ rules:
         module_name: great_expectations.rule_based_profiler.parameter_builder
         metric_domain_kwargs: $domain.domain_kwargs
     expectation_configuration_builders:
-      - expectation_type: expect_column_values_to_be_in_set
+      - expectation_type: expect_table_columns_to_match_set
         class_name: DefaultExpectationConfigurationBuilder
         module_name: great_expectations.rule_based_profiler.expectation_configuration_builder
         column: $domain.domain_kwargs

@@ -11,7 +11,7 @@ from great_expectations.profile.user_configurable_profiler import (
 
 context = ge.data_context.DataContext()
 
-expectation_suite_name= "mysuite"
+expectation_suite_name= "my_suite_name"
 
 batch_request = {
     "datasource_name": "RSM9",

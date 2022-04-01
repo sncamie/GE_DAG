@@ -29,7 +29,11 @@ variables:
     data_connector_name: default_configured_data_connector_name
     data_asset_name: RSM9
     data_connector_query:
-      index: "-5:-1"
+      index: "-500:-1"
+    batch_spec_passthrough:
+      sampling_method: _sample_using_random
+      sampling_kwargs:
+        p: 1.0e-1
 
   false_positive_rate: 5.0e-2
 
