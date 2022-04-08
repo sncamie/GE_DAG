@@ -6,6 +6,8 @@ from great_expectations.checkpoint import SimpleCheckpoint
 from great_expectations.core.batch import BatchRequest, RuntimeBatchRequest
 from great_expectations.rule_based_profiler.rule_based_profiler import RuleBasedProfiler
 from ruamel import yaml
+import shutil
+import os
 
 context = ge.get_context()
 
@@ -181,7 +183,11 @@ rule_based_profiler: RuleBasedProfiler = RuleBasedProfiler(
 )
 
 expectation_suite_name = "my_suite_name"  # change the suite name to the one you want
-suite = rule_based_profiler.run(expectation_suite_name=expectation_suite_name)
+suite = rule_based_profiler.run()
 
 
 context.save_expectation_suite(suite, overwrite_existing=True)
+
+# clean up Expectations directory after running tests
+shutil.rmtree("great_expectations/expectations/tmp")
+os.remove("great_expectations/expectations/.ge_store_backend_id")
